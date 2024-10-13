@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block stylesheet %} 
+    <!-- Link Resective CSS --> 
+    <link rel="stylesheet" href="{{ url_for('static', filename='style-professional.css')}}">
+{% endblock %}
+
+
+{% block content %}
+  <div class="content">
+    <div class="row">
+        <div class="left">
+            <div class="card block">
+                <div class="sub-card">
+                    <h2>{{ user.name }}</h2>
+                    <p>{{ user.address }}</p>
+                    <p>{{ user.experience }} Years</p>
+                    
+                    <a id="pendingLink" href="https://www.google.com">Edit Profile></a>
+                </div>
+                <div class="sub-card">
+                    <img src="{{ url_for('static', filename='user.png') }}" alt="profile" 
+                    style="height: 100%; border-radius: 10px; margin-left: 50%;">
+                    
+                </div>
+            </div>
+
+            
+            <div class="card-bottom-left block">
+                <h3><span style="font-size: 32px;">Today's Services</span></h3>
+                <div style="height: 80%;">
+                    
+                    <!-- TODO : Implement Loop to display list of service requests -->
+
+                </div>
+            </div>
+
+        </div>
+        <div class="right">
+            <div class="card-top-right block">
+                <h3>
+                    <span style="font-size: 32px; color:#bf4800;">Closed Services</span> 
+                </h3>
+                
+                {% for i in updates %}
+                <ul>
+                    <li><h6>{{ i['title'] }}</h6> ~ {{ i['date'] }}</li>
+                </ul>    
+                {% endfor %}
+
+            </div>
+
+
+            
+                
+            </div>
+        </div>
+    </div>
+
+
+            
+    </div>
+    
+   
+
+{% endblock %}
+
+
