@@ -1,0 +1,305 @@
+@font-face {
+  font-family: "San Francisco";
+  font-weight: 400;
+  src: url("https://applesocial.s3.amazonaws.com/assets/styles/fonts/sanfrancisco/sanfranciscodisplay-regular-webfont.woff");
+}
+
+:root{
+  --nav-bg: rgb(22,22,23,0.8);
+  --white: #f5f5f7;
+  --bg: #f5f5f8;
+  --dark-bg: #2c2c2c;
+  --dark-box: #1c1c1c;
+  --beinge-white: rgb(216,216,220);
+  --gray: rgb(99,99,102) ;
+  --blue: #0071e3;
+  --orange: #bf4800;
+  --red: rgb(215,0,21);
+  --success: rgb(48,219,91);
+  --yellow: rgb(255,214,10);
+  --nav-color: rgba(255, 255, 255, .8);
+  --nav-color-secondary: #E8E8ED;
+  --nav-color-hover: #FFFFFF;
+  --main-white: #ffffff;
+}
+
+.alert{
+  width: 35%;
+  position: relative;
+  margin: auto;
+  margin-top: 48px;
+  border-radius: 12px;
+}
+
+body{
+  background-color: var(--dark-bg);
+  font-size: 17px;
+  line-height: 1.47059;
+  font-weight: 400;
+  letter-spacing: -0.022em;
+  font-family: "SF Pro Text", "SF Pro Icons", "AOS Icons", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: rgb(29, 29, 31);
+  font-style: normal;
+  overflow: hidden; 
+}
+.hidden {
+    display: none;
+}
+
+@font-face {
+  font-family: SF Pro;
+  src: url(/Website/Static/font.OTF);
+}
+.alert{
+  position: relative;
+  z-index: 2;
+  margin-left: 30%;
+}
+/* Sidebar  */
+.nav {
+    margin: 0;
+    padding: 0;
+    top:0;
+    height:44px;
+    width: 100%;
+    background-color:  var(--nav-bg);
+    backdrop-filter: saturate(180%) blur(20px);
+    position: fixed;
+    z-index: 10;
+  }
+  .nav-content{
+    align-items: center;
+    margin: auto;
+    height: 40px;
+  }
+  .nav-logout{
+    align-items: right;
+    margin-left: 100px;
+  }
+  /* Sidebar links */
+  .nav a {
+    display: inline-block;
+    color: var(--nav-color);
+    padding: 0;
+    margin: 8px;
+    font-size: 14px;
+    font-weight: 300;
+    text-decoration: none;
+    border-radius: 6px;
+    font-family: SF Pro Text, SF Pro Icons, Helvetica Neue, Helvetica, Arial, sans-serif;
+  }
+  
+  /* Links on mouse-over */
+  .nav a:hover:not(.active) {
+    transition: height 364ms cubic-bezier(.4,0,.6,1) 80ms;
+    color: #ffffff;
+  }
+
+  /* Content */
+ 
+  .content{
+    background-color: var(--dark-bg);
+    overflow: hidden;
+    margin-top:54px;
+  }
+  
+  .row{
+    display: grid;
+    grid-template-columns: 4fr 2fr;
+    grid-gap: 20px;
+    gap: 20px;
+    width: 100%;
+  }
+
+  .left , .right{
+    height: 100vh;
+  }
+  
+  .card{
+    height: 30%;
+    background-color: var(--main-white);
+    margin-left: 40px;
+    padding: 20px;
+    border-radius: 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 20px;
+  }
+
+  .sub-card{
+    height: 55%;
+  }
+
+  .block:hover{
+    transform: scale(1.01);
+    transition: 340ms;
+  }
+  .card-bottom-left{
+    background-color: var(--main-white);
+    height: 50%;
+    margin-top: 20px;
+    margin-left: 40px;
+    padding: 20px;
+    border-radius: 20px;
+    scrollbar-color: var(--dark-box) var(--beinge-white);
+    scrollbar-width: none ;
+    overflow-y: auto;
+  }
+  
+
+  .card-top-right{
+    background-color: var(--main-white);
+    padding: 20px;
+    height: 40%;
+    min-height: 40%;
+    border-radius: 20px;
+    scrollbar-color: var(--dark-box) var(--beinge-white);
+    scrollbar-width: none ;
+    overflow-y: auto; /* Add a vertical scrollbar if needed */
+  }
+
+  .card-bottom-right{
+    background-color: var(--main-white);
+    height: 40%;
+    margin-top: 20px;
+    padding: 20px;
+    border-radius: 20px;
+    overflow: auto;
+    scrollbar-width: none;
+  }
+  .chart-container {
+      height: 80vh;
+      width: 95%;
+      max-width: 95%;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px; 
+      border: 5px var(--orange) solid;
+      border-radius: 12px;
+      padding: 20px;
+  }
+
+  .chart {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border: 5px var(--dark-bg) solid;
+      border-radius: 12px;
+      margin-left: 15%;
+      width: 70%;
+      max-width: 70%;
+  }
+  
+  /* Elements */
+  h2{
+    font-size: 48px;
+    line-height: 1;
+    font-weight: 700;
+    letter-spacing: -0.00043em;
+  }
+
+  select, input, textarea{
+    border: none;
+    background-color: #E8E8ED;
+    border-radius: 8px;
+    padding: 6px;
+    padding-left: 10px;
+  }
+
+  textarea{
+    display: inline-block;
+    vertical-align: middle;
+    
+  }
+  table {
+    border-collapse: collapse; /* Collapses borders into a single line */
+    width: 100%; /* Optional: makes table full width */
+  }
+  th, td {
+      border: 2px solid black; /* Solid black border for cells */
+      padding: 10px; /* Add padding for better spacing */
+      text-align: left; /* Align text to the left */
+  }
+  th {
+      background-color: #f2f2f2; /* Light gray background for headers */
+  }
+  tr:nth-child(even) {
+      background-color: #f9f9f9; /* Light gray for even rows */
+  }
+  p{
+    
+    font-size: 17px;
+    line-height: 1.17648;
+    font-weight: 400;
+    letter-spacing: -.022em;
+  } 
+
+  a:hover{
+    text-decoration: none;
+  }
+
+
+  /* Responsive */
+  
+  /* On screens that are less than 700px wide, make the sidebar into a topbar */
+  @media screen and (max-width: 700px) {
+    .nav {
+      width: 100%;
+      height: 44px;
+      position: fixed;
+    }
+
+    
+  }
+  
+  
+
+  /* On screens that are less than 400px, display the bar vertically, instead of horizontally */
+  @media screen and (max-width: 400px) {
+    .nav a {
+      text-align: center;
+      float: none;
+    }
+    
+  }
+
+
+/* SIGN UP Login PAGE   */
+
+.auth{
+  width: 35%;
+  padding: 18px;
+  padding-bottom: 35px;
+  margin: auto;
+  margin-top: 150px;
+  background-color:var(--main-white);
+  border-radius: 20px;
+  text-align: center;
+}
+
+.form-group{
+  width: 80% ;
+  margin: 10px auto 0 auto;
+  background-color: var(--main-white);
+  color: rgb(29, 29, 31);
+  border-radius: 10px;
+}
+
+.form-control{
+  border-radius: 12px;
+}
+.btn-submit{
+  background-color: var(--blue);
+  color: var(--main-white);
+  text-align: center;
+  border-radius: 12px;
+}
+
+#login-signup{
+  color: var(--orange);
+  margin: auto;
+  display: block;
+  font-size: 14px;
+  margin-top: 12px;
+  font-weight: 200;
+}

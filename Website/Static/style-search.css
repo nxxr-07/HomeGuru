@@ -1,0 +1,31 @@
+#search-text {
+    width: 200px;
+    padding: 5px;
+    border: 1px solid #333333;
+}
+h2{
+    color: var(--orange);
+}
+.content{
+    width: 80%;
+    margin: 50px auto;
+    background-color: var(--white);
+    border-radius: 20px;
+    padding: 20px;
+}
+
+table {
+    border-collapse: collapse; 
+    width: 70%; 
+}
+th, td {
+    border: 2px solid black; /* Solid black border for cells */
+    padding: 10px; /* Add padding for better spacing */
+    text-align: left; /* Align text to the left */
+}
+th {
+    background-color: #f2f2f2; /* Light gray background for headers */
+}
+tr:nth-child(even) {
+    background-color: #f9f9f9; /* Light gray for even rows */
+}

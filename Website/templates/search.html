@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+
+{% block stylesheet %} 
+    <!-- Link Resective CSS --> 
+    <link rel="stylesheet" href="{{ url_for('static', filename='style-search.css')}}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
+
+{% block content %}
+
+<div class="content block">
+    <h2>Search Functionality</h2>
+    <form method="GET" action="{{ url_for('views.search') }}">
+        <h4 >Search By</h4>
+        <select name="search-by" id="search-by">
+            
+            <option value="">Select Option</option>
+            {% if user_type == "Admin" or user_type == "Professional" %}
+                <option value="service_request">Service Request</option>
+            {% endif %}
+            {% if user_type == "Admin" or user_type == "Customer" %}
+                <option value="services">Services</option>
+                <option value="pincode">Pin Code</option>
+                <option value="service-type">Type</option>
+            {% endif %}
+            {% if user_type =="Admin" %}
+                <option value="customers">Customers</option>
+                <option value="professionals">Professionals</option>
+            {% endif %}
+        </select>
+        <input type="text" id="search-text" name="search-text" placeholder="Search text" required>
+        <button type="submit" class="btn btn-primary">Search</button>
+    </form>
+
+    {% if results %}
+        <h2>Service Results</h2>
+        <div class="search-result">
+            <table>
+                <thead>
+                    <tr>
+                        {% if search_by == 'service_request' %}
+                            <th>Request ID</th>
+                            <th>Customer</th>
+                            <th>Professional</th>
+                            <th>Status</th>
+                        {% elif search_by == 'services' %}
+                            <th>Service ID</th>
+                            <th>Name</th>
+                            <th>Type</th>
+                            <th>Price</th>
+                        {% elif search_by == 'customers' %}
+                            <th>Customer ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                        {% elif search_by == 'professionals' %}
+                            <th>Professional ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                        {% endif %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for result in results %}
+                        <tr>
+                            {% if search_by == 'service_request' %}
+                                <td>{{ result.id }}</td>
+                                <td>{{ result.customer.name }}</td>
+                                <td>{{ result.professional.name }}</td>
+                                <td>{{ result.service_status }}</td>
+                            {% elif search_by == 'services' %}
+                                <td>{{ result.id }}</td>
+                                <td>{{ result.name }}</td>
+                                <td>{{ result.type }}</td>
+                                <td>{{ result.price }}</td>
+                            {% elif search_by == 'customers' %}
+                                <td>{{ result.id }}</td>
+                                <td>{{ result.name }}</td>
+                                <td>{{ result.email }}</td>
+                            {% elif search_by == 'professionals' %}
+                                <td>{{ result.id }}</td>
+                                <td>{{ result.name }}</td>
+                                <td>{{ result.email }}</td>
+                            {% endif %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <p>No results found for your search.</p>
+    {% endif %}
+</div>
+
+   
+
+{% endblock %}

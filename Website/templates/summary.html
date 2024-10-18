@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+
+{% block stylesheet %} 
+    <!-- Link Resective CSS --> 
+    <link rel="stylesheet" href="{{ url_for('static', filename='style-professional.css')}}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
+
+{% block content %}
+    <div class="summary-content">
+        <h2 style="color: var(--beinge-white);">{{ user_type }} Summary</h2>
+
+
+        <div class="chart-container">
+            {% if user_type == 'Professional' %}
+            <div class="chart block">
+                <canvas id="ratingCanvas" width="400" height="400"></canvas>
+                <div class="header-container">
+                    <h5 style="color: var(--dark-box);">Max rating: 5</h5> 
+                    <h4 style="color: var(--dark-box);">Overall Customer Ratings</h4>
+                </div>
+            </div>
+            {% endif %}
+            <div class="chart block">
+                <canvas id="statusChart"></canvas>
+                <div class="header-container">
+                    <h4 style="color: var(--dark-box);">Service Requests Summary</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        const userType = '{{ user_type }}';
+        const avgRating = '{{ avg_rating | tojson }}';
+        
+        if (userType === 'Professional') {
+            const maxRating = 5;
+            const canvas = document.getElementById('ratingCanvas');
+            const ctx = canvas.getContext('2d');
+
+            // Draw background circle (5-star rating)
+            const drawBackgroundCircle = () => {
+                ctx.fillStyle = '#e0e0e0'; // Light gray for background
+                ctx.beginPath();
+                ctx.arc(200, 200, 150, 0, Math.PI * 2); // Centered at (200, 200) with radius 150
+                ctx.fill();
+            };
+
+            // Draw overlay circle based on average rating
+            const drawOverlayCircle = (rating) => {
+                const radius = (rating / maxRating) * 150; // Calculate radius based on average rating
+                ctx.fillStyle = '#FF6384'; // Color for average rating
+                ctx.beginPath();
+                ctx.arc(200, 200, radius, 0, Math.PI * 2); // Centered at (200, 200) with dynamic radius
+                ctx.fill();
+            };
+
+            // Draw both circles
+            drawBackgroundCircle();
+            drawOverlayCircle(avgRating);
+        }
+
+        // Data for Service Request Status
+        const statusCounts = {
+            requested: '{{ status_dict.requested | tojson }}',
+            assigned: '{{ status_dict.assigned | tojson }}',
+            closed: '{{ status_dict.closed | tojson }}'
+        };
+
+        const statusCtx = document.getElementById('statusChart').getContext('2d');
+        const statusChart = new Chart(statusCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Requested', 'Assigned', 'Closed'],
+                datasets: [{
+                    label: 'Service Request Count',
+                    data: [statusCounts.requested, statusCounts.assigned, statusCounts.closed],
+                    backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+
+{% endblock %}

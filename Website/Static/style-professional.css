@@ -1,0 +1,42 @@
+
+.card-top-right, .card-bottom-right{
+    height: 40%;
+    
+}
+
+.summary-content{
+    margin: 40px;
+    border-radius: 20px;
+}
+.chart-container {
+    background-color: var(--bg);
+    height: 80vh;
+    width: 95%;
+    max-width: 95%;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px; 
+    border: 5px #bf4800 solid;
+    border-radius: 12px;
+    padding: 20px;
+}
+
+.chart {
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative; /* Positioning for the overlay */
+    width: 70%;
+    max-width: 70%;
+    margin-left: auto;
+    margin-right: auto;
+}
+.header-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: absolute; 
+    bottom: 0%; 
+    width: 100%; 
+}

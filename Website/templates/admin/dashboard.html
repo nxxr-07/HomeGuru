@@ -1,0 +1,314 @@
+{% extends 'base.html' %}
+
+
+{% block stylesheet %} 
+    <!-- Link Resective CSS --> 
+    <link rel="stylesheet" href="{{ url_for('static', filename='style-admin-db.css')}}">
+{% endblock %}
+
+
+{% block content %}
+  <div class="content">
+    <div class="row">
+        <div class="left">
+            <div class="card block">
+                <div class="sub-card">
+                    <h2> {{ user.name }} </h2>
+                    
+                </div>
+                <div class="sub-card">
+                    <img src="{{ url_for('static', filename='administrator.png') }}" alt="profile" 
+                    style="height: 55%; border-radius: 10px; margin-left: 55%;">
+                    
+                </div>
+            </div>
+
+            
+            <div class="card-bottom-left block">
+                <h3><span style="font-size: 32px;">Professionals</span></h3>
+                <!-- Table for Professioanls -->
+                <table>
+                    <tr>
+                        <th>Id</td>
+                        <th>Name</td>
+                        <th>Service Type</td>
+                        <th>Experience(Yrs.)</td>
+
+                    </tr>
+                    <!-- TODO: implement for loop to display all professionals-->
+
+                    {% for professional in professionals %}
+                    <tr>
+                        <td><span> {{ professional.id }} </span></td>
+                        <td><span> {{ professional.name }} </span></td>
+                        <td><span> {{ professional.service_type }} </span></td>
+                        <td><span> {{ professional.experience }} </span></td>
+                        
+                    </tr>
+                    {% endfor %}
+                </table>
+                
+                
+
+            </div>
+
+        </div>
+        <div class="right">
+            <div class="card-top-right block">
+                <h3>
+                    <span style="font-size: 32px; color:#bf4800;">Services</span> 
+                    
+                    <!-- TODO: Implement logic to add more service types for this button -->
+                    <button class="btn btn-primary" id="addServiceBtn"> + Add Service</button>
+                </h3>
+                <!-- Table for Services -->
+                <table>
+                    <tr>
+                        <th>Id</th>
+                        <th>Name</th>
+                        <th>Service Type</th>
+                        <th>Base Price</th>
+                        <th>Edit</th>
+                        
+                    </tr>
+                    <!-- TODO: implement for loop to display all services-->
+
+                    {% for service in services %}
+                    <tr>
+                        <td><span> {{ service.id }} </span></td>
+                        <td><span> {{ service.name }} </span></td>
+                        <td><span> {{ service.type }} </span></td>
+                        <td><span> {{ service.price }} </span></td>
+                        <td>
+                            <span> 
+                                <button class="editService btn btn-primary"
+                                    data-service-id="{{ service.id }}" 
+                                    data-service-name="{{ service.name }}"
+                                    data-service-type="{{ service.type }}" 
+                                    data-service-price="{{ service.price }}" 
+                                    data-service-time="{{ service.time_required }}" 
+                                    data-service-description="{{ service.description }}">
+                                Edit
+                                </button> 
+                            <button class="deleteService btn btn-danger" data-service-id="{{ service.id }}">Delete</button> 
+                            
+
+                            </span>
+                        </td>
+                        
+                    </tr>
+                    {% endfor %}
+                </table>
+                
+            </div>
+
+
+            <div class="card-bottom-right block">
+                <h3><span style="font-size: 32px;">Service Requests</span></h3>
+                
+                <!-- Table for Service Requests -->
+                <div class="classes">
+                    <table>
+                        <tr>
+                            <th>Id</td>
+                            <th>Service Name</th>
+                            <th>Assigned Prof.</td>
+                            <th>Requested Date</td>
+                            <th>Status</td>
+                        </tr>
+                        <!-- TODO : Implement for loop to list all services-->
+                        {% for service_req in service_requests %}
+                            <tr>
+                                <td><span> {{ service_req.id }} </span></td>
+                                <td><span> {{ service_req.service.name }} </span></td>
+                                <td><span> {{ service_req.professional.name }} </span></td>
+                                <td><span> {{ service_req.date_of_request }} </span></td>
+                                <td><span> {{ service_req.service_status }} </span></td>
+                                
+                            </tr>
+                        {% endfor %}
+                        
+                    </table>
+                </div>
+                    
+                
+            </div>
+        </div>
+    </div>
+
+
+            
+    </div>
+
+    <div id="overlay" class="overlay"></div>
+
+                <div id="popup" class="popup">
+                    <h3>
+                        <span style="font-size: 32px; color:#bf4800;">Add a Service</span> 
+                        
+                    </h3>
+                    <form method="POST" action="{{ url_for('admin.add_service') }}" class="service">
+                        <div class="form-group">
+                            <input type="text" id="service-name" name="service-name" placeholder="Name" required/>
+                        </div>
+                        <div class="form-group">
+                            <input type="textarea" id="service-desc" name="service-desc" placeholder="Description About Service" required/>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" id="service-type" name="service-type" placeholder="Service Type" required/>
+                        </div>
+                        <div class="form-group">
+                            <input type="number" id="service-time" name="service-time" placeholder="Time Required (in  HOURS)" />
+                        </div>
+                        <div class="form-group">
+                            <input type="number" id="service-baseprice" name="service-baseprice" placeholder="Base Price (in  &#8377;)" required/>
+                        </div>
+                        <br/>
+                        <button type="submit" class="btn btn-primary" style="border-radius: 10px; margin-left: 20%;">Add Service <img src="{{ url_for('static', filename='plus.png') }}" alt="add_icon" style="height: 20px;"> </button>
+                        <button class="btn btn-secondary" style="border-radius: 10px; margin-left: 22%;" type="button" id="closeBtn">Close</button>
+                    </form>
+
+                    
+                </div>
+    
+    <!-- Edit Service  -->
+   <!-- Edit Service Popup -->
+            <div id="edit-service-overlay" class="overlay" style="display:none; background-color: rgb(0, 0, 0, 0.7);"></div>
+            <div id="edit-service-popup" class="popup" >
+                <h3>Edit Service</h3>
+                <form id="editServiceForm">
+                    <input type="hidden" name="id" id="serviceId">
+                    <label for="serviceName">Name:</label>
+                    <input type="text" name="name" id="serviceName" required>
+
+                    <label for="serviceType">Type:</label>
+                    <input type="text" name="type" id="serviceType" required>
+
+                    <label for="servicePrice">Price:</label>
+                    <input type="number" name="price" id="servicePrice" step="0.01" required>
+
+                    <label for="serviceTime">Time Required:</label>
+                    <input type="text" name="time_required" id="serviceTime" required>
+
+                    <label for="serviceDescription">Description:</label>
+                    <textarea name="description" id="serviceDescription"></textarea>
+
+                    <button type="submit" class="btn btn-success">Save Changes</button>
+                </form>
+                <button id="closeEditPopup" class="btn btn-secondary">Close</button>
+            </div>
+        
+
+        <script>
+
+            //POPUP when adding new service
+            document.getElementById('addServiceBtn').addEventListener('click', function() {
+                document.getElementById('overlay').style.display = 'block';
+                document.getElementById('popup').style.display = 'block';
+            });
+
+            document.getElementById('closeBtn').addEventListener('click', function() {
+                document.getElementById('overlay').style.display = 'none';
+                document.getElementById('popup').style.display = 'none';
+            });
+
+            // Close the popup when clicking outside of it
+            document.getElementById('overlay').addEventListener('click', function() {
+                this.style.display = 'none';
+                document.getElementById('popup').style.display = 'none';
+            });
+
+
+            // Edit Service Popup
+            document.querySelectorAll('.editService').forEach(button => {
+                button.addEventListener('click', function() {
+
+                    // Show the popup
+                    document.getElementById('edit-service-popup').style.display = 'block';
+                    document.getElementById('edit-service-overlay').style.display = 'block';
+
+                    const serviceId = this.getAttribute('data-service-id');
+                    const serviceName = this.getAttribute('data-service-name'); // Use appropriate selector
+                    const serviceType = this.getAttribute('data-service-type');
+                    const servicePrice = this.getAttribute('data-service-price');
+                    const serviceTime = this.getAttribute('data-service-time');
+                    const serviceDescription = this.getAttribute('data-service-description');
+        
+
+                    //testing output
+                    console.log('Service ID:', serviceId);
+                    console.log('Service Name:', serviceName);
+                    console.log('Service Type:', serviceType);
+                    console.log('Service Price:', servicePrice);
+                    console.log('Service Time:', serviceTime);
+                    console.log('Service Description:', serviceDescription);
+
+
+                    // Populate the popup form with service details
+                    document.getElementById('serviceId').value = serviceId;
+                    document.getElementById('serviceName').value = serviceName;
+                    document.getElementById('serviceType').value = serviceType;
+                    document.getElementById('servicePrice').value = servicePrice;
+                    document.getElementById('serviceTime').value = serviceTime;
+                    document.getElementById('serviceDescription').value = serviceDescription;
+        
+                    
+                    
+                });
+            });
+        
+            // Handle the submission of the edit form
+            document.getElementById('editServiceForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const formData = new FormData(this);
+
+                fetch('/admin/edit_service', {
+                    method: 'POST',
+                    body: formData,
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        window.location.reload();  // Reload to see the updated data
+                    } else {
+                        alert('Error updating service');
+                    }
+                });
+            });
+
+        
+            // Close Edit Popup
+            document.getElementById('closeEditPopup').addEventListener('click', function() {
+                document.getElementById('edit-service-popup').style.display = 'none';
+                document.getElementById('edit-service-overlay').style.display = 'none';
+                
+            });
+        
+            // Delete Service
+            document.querySelectorAll('.deleteService').forEach(button => {
+                button.addEventListener('click', function() {
+                    const serviceId = this.getAttribute('data-service-id');
+                    if (confirm('Are you sure you want to delete this service?')) {
+                        fetch(`/admin/delete_service/${serviceId}`, {
+                        method: 'POST',
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            window.location.reload();  // Reload to see the updated data
+                        } else {
+                            alert('Error deleting service');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Error deleting service');
+                    });
+                    }
+                });
+            });
+        </script>
+        
+        
+{% endblock %}
+
+

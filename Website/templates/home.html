@@ -1,0 +1,239 @@
+{% extends 'base.html' %}
+
+{% block stylesheet %} 
+    <!-- Link Resective CSS --> 
+    <link rel="stylesheet" href="{{ url_for('static', filename='style-home.css')}}">
+{% endblock %}
+
+{% block content %}
+    
+    
+        <div class="left">
+            <div class="browse ">
+                <div class="carousel">
+                    <h4 class="browse-heading">Browse Services</h4>
+                    <div class="carousel-inner">
+
+                        {% for service_type in service_types %}
+                            <div class="product"> 
+                                <h3 style="margin-top: 40%;">{{ service_type }}</h3>
+                                <button class="viewBundle btn btn-primary" data-type-name="{{ service_type }}"> View </button>
+                            </div>
+                        {% endfor %}
+
+                        
+                    </div>
+                </div>
+
+            </div>
+
+            
+            <div class="card-bottom-left block">
+                
+                <div class="classes">
+                    <h3><span style="font-size: 32px;">Services History</span></h3>
+                    <!-- TODO : Implement Loop to display list of service requests -->
+                    <table style="border: 2px solid var(--orange);">
+                        <tr>
+                            <th>Id</td>
+                            <th>Service Name</th>
+                            <th>Assigned Prof.</td>
+                            <th>Requested Date</td>
+                            <th>Status</td>
+                            <th>Action</th>
+                        </tr>
+                        <!-- TODO : Implement for loop to list all services requests-->
+                        {% for service_req in service_requests %}
+                            {% if service_req.customer_id == current_user.id %}
+                                <tr>
+                                    <td><span>{{ service_req.id }}</span></td>
+                                    <td><span>{{ service_req.service.name }}</span></td>
+                                    <td><span>{{ service_req.professional.name }}</span></td>
+                                    <td><span>{{ service_req.date_of_request }}</span></td>
+                                    <td><span>{{ service_req.service_status }}</span></td>
+                                    {% if service_req.service_status == 'requested' %}
+                                    <td>
+                                        <form action="{{ url_for('views.cancel_request', request_id=service_req.id) }}" method="post" style="display:inline;">
+                                            <button class="btn btn-primary" type="submit">Cancel</button>
+                                        </form>
+                                    </td>
+                                    {% elif service_req.service_status == 'assigned' %}
+                                    <td>
+                                        
+                                        <button class="btn btn-primary" 
+                                        onclick="reviewPopup('{{ service_req.id }}', '{{ service_req.service.name }}', '{{ service_req.service.price }}', '{{ service_req.service.description }}', '{{ service_req.professional.name }}')">Close It</button>
+
+                                        
+                                    </td>
+                                    {% endif %}
+                                    
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
+                        
+                    </table>
+                    
+                    
+                </div>
+                <div style="height: 50%;">
+                    <img src="{{ url_for('static', filename='user.png') }}" alt="profile" 
+                    style="height: 30%; border-radius: 10px; margin-left: 20%;">
+                   
+                    <h2>{{ user.name }}</h2>
+                    <p>{{ user.address }}</p>
+                    <p>{{ user.pincode }}</p>
+                    
+                    <a id="pendingLink" href="https://www.google.com">Edit Profile></a>
+                </div>
+                
+            </div>
+
+        </div>
+   
+        <div id="overlay-bundle" class="overlay-bundle" style="display:none;"></div>
+
+        <div id="popup-bundle" class="popup-bundle" style="display:none;">
+            <h3>Browse Services</h3>
+            <div id="popup-bundle-content">  <!-- This is where the services will be injected -->
+                <h5>
+                    <span>Name</span>
+                    <span>Description</span>
+                    <span>Price</span>
+                </h5>
+            </div>
+            <button id="closeBtn-bundle" class="btn btn-secondary">Close</button>
+        </div>
+
+        <div id="review-service-overlay" class="overlay-bundle" style="display:none;"></div>
+
+        <div id="review-service-popup" class="popup-bundle" style="display:none;">
+            <h3>Service Remarks</h3>
+            <div id="popup-bundle-content">
+                <form action="{{ url_for('views.submit_review', request_id=0 )}}" method="POST">
+                    <input type="hidden" id="service-id" name="service_id" value="">
+                    <div class="review-grid">
+                        <div class="review-grid-item">
+                            <label for="service-name">Service Name:</label>
+                            <span id="service-name"></span>
+                        </div>
+                        <div class="review-grid-item">
+                            <label for="service-price">Price:</label>
+                            <span id="service-price"></span>
+                        </div>
+                        <div class="review-grid-item">
+                            <label for="service-description">Description:</label>
+                            <span id="service-description"></span>
+                        </div>
+                        <div class="review-grid-item">
+                            <label for="professional-name">Professional:</label>
+                            <span id="professional-name"></span> <!-- Added for professional name -->
+                        </div>
+                        <div >
+                            <label for="service-rating">Rating (0-5):</label>
+                            <input type="number" id="service-rating" name="service_rating" min="0" max="5" required>
+                        </div>
+                        <div >
+                            <label for="service-remarks">Remarks:</label>
+                            <textarea id="service-remarks" name="service_remarks" placeholder="Any Remarks(Optional)"></textarea>
+                        </div>
+                        <div style=" display: flex; justify-content: space-around; padding: 10px;">
+
+                            <button type="submit" class="btn btn-success">Submit Review</button>
+                            <button id="closeBtn-review" class="btn btn-secondary">Close</button>
+
+                        </div>
+                </form>
+            </div>
+            
+        </div>
+        
+
+
+
+        <script>
+            //POPUP when Clicking a service bundle by a customer
+            
+            //Book services
+            function showPopup(services) {
+                const popupContent = document.getElementById('popup-bundle-content');
+                popupContent.innerHTML = services.length > 0 
+                    ? services.map(service => 
+                        `<div class="service-item" style="border: solid 2px black; border-radius: 12px; margin-bottom: 10px; padding:5px;">
+                            <h3>${service.name}</h3>
+                            <span>${service.description || 'No description available'}</span>
+                            <span>${service.time_required}</span>
+                            <span>$${service.price.toFixed(2)}</span>
+                            <button id="book-service" class="btn btn-success" onclick="bookService(${ service.id })">Book</button>
+                        </div>`).join('') 
+                    : '<p>No services available for this type.</p>';
+
+                document.getElementById('overlay-bundle').style.display = 'block';
+                document.getElementById('popup-bundle').style.display = 'block';
+            }
+
+
+            document.querySelectorAll('.viewBundle').forEach(button => {
+                button.addEventListener('click', function() {
+                    const typeName = this.getAttribute('data-type-name');
+                    fetch(`/services/${typeName}`)
+                        .then(response => response.json())
+                        .then(data => showPopup(data))
+                        .catch(error => console.error('Error fetching services:', error));
+                });
+            });
+
+            document.getElementById('closeBtn-bundle').addEventListener('click', function() {
+                document.getElementById('overlay-bundle').style.display = 'none';
+                document.getElementById('popup-bundle').style.display = 'none';
+            });
+
+            document.getElementById('overlay-bundle').addEventListener('click', function() {
+                this.style.display = 'none';
+                document.getElementById('popup-bundle').style.display = 'none';
+            });
+
+            //Book Service
+            function bookService(serviceId) {
+            fetch(`/book_service/${serviceId}`, {
+                method: 'POST',
+                body: JSON.stringify({}) // You can send data if needed
+            })
+            .then(response => {
+                if (response.redirected) {
+                    window.location.href = response.url; // Redirect to the home page
+                }
+            })
+            .catch(error => console.error('Error:', error));
+            }
+            
+            function reviewPopup(serviceId, serviceName, servicePrice, serviceDescription, professionalName) {
+                document.getElementById('service-id').value = serviceId; // Set the service ID in the hidden input
+                document.getElementById('service-name').textContent = serviceName; // Set the service name
+                document.getElementById('service-price').textContent = servicePrice; // Set the service price
+                document.getElementById('service-description').textContent = serviceDescription; // Set the service description
+                document.getElementById('professional-name').textContent = professionalName; // Set the professional name
+
+                const form = document.querySelector('#review-service-popup form');
+                form.action = `/submit_review/${serviceId}`;
+
+
+                document.getElementById('review-service-overlay').style.display = 'block';
+                document.getElementById('review-service-popup').style.display = 'block';
+            }
+
+            document.getElementById('closeBtn-review').addEventListener('click', function() {
+                document.getElementById('review-service-overlay').style.display = 'none';
+                document.getElementById('review-service-popup').style.display = 'none';
+            });
+
+            document.getElementById('review-service-overlay').addEventListener('click', function() {
+                this.style.display = 'none';
+                document.getElementById('review-service-popup').style.display = 'none';
+            });
+
+        </script>
+
+
+{% endblock %}
+
+

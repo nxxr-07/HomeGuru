@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}Sign Up{% endblock %}
+
+{% block content %}
+<form method="POST" class="auth">
+    <h3>Sign Up As Professionals</h3>
+    <img src="{{ url_for('static', filename='signup.gif') }}" alt="welcome gif" style="width: 40px;">
+    
+    <div class="form-group">
+        <input type="text" class="form-control" id="name" name="name" placeholder="Enter Full Name" required/>
+        
+    </div>
+    
+    <div class="form-group">
+        <select class="form-control" name="serviceType" id="serviceType" required>
+            <!-- TODO:  Implement a for loop that fetches list of services as a select-option input-->
+            <option value="">Select Your Type of Service</option>
+            
+            {% for service in services %}
+                <option value="{{ service.type }}"> {{ service.type }} </div>
+            {% endfor %}
+            
+          </select>
+        
+    </div>
+
+    
+
+    <div class="form-group">
+        <input type="text" class="form-control" id="address" name="address" placeholder="Enter Address" required/>
+
+    </div>
+
+    <div class="form-group">
+        <input type="number" class="form-control" id="pincode" name="pincode" placeholder="Enter Pincode" required/>
+
+    </div>
+    
+    <div class="form-group">
+        <input type="number" class="form-control" id="experience" name="experience" placeholder="Enter Experience" required/>
+
+    </div>
+
+    <div class="form-group">
+        <input type="email" class="form-control" id="email" name="email" placeholder="Enter Email" required/>
+
+    </div>
+    <div class="form-group">
+        <input type="password" class="form-control" id="password" name="password" placeholder="Enter Password" required/>
+        
+    </div>
+    
+    <br />
+    <button type="submit" class="btn btn-primary btn-submit">Create New Account</button>
+    <a href="/login" id="login-signup">Already have an account</a>
+
+    
+
+</form>
+
+
+{% endblock %}

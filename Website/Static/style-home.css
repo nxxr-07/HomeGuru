@@ -1,0 +1,220 @@
+/* Content */
+ 
+  .left {
+    height: 100vh;
+    width: 100%;
+    padding-top: 48px;
+  }
+  
+  .browse{
+    height: 50%;
+    background-color: var(--main-white);
+    margin-left: 40px;
+    margin-right: 40px;
+    padding: 20px;
+    border-radius: 20px;
+    
+  }
+  .browse-heading{
+    color: var(--orange);
+    padding-left: 10px;
+  }
+
+  .carousel {
+    height: 100%;
+    width: 100%;
+    border-radius: 20px;
+    position: relative;
+    background-color: #f4f4f4; 
+    white-space: nowrap;
+  }
+
+  .carousel-inner {
+    display: inline-flex; 
+    height: 90%;
+    overflow-x: auto;
+    
+  }
+
+  .product {
+    min-width: 210px;
+    height: 80%; 
+    margin: 10px;
+    border-radius: 20px;
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Space between items */
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    white-space: normal; /* Allow text to wrap if necessary */
+    padding: 10px; /* Add some padding for better spacing */
+}
+
+
+
+  .block:hover{
+    transform: scale(1.01);
+    transition: 340ms;
+  }
+  .card-bottom-left{
+    background-color: var(--main-white);
+    height: 40%;
+    margin-top: 20px;
+    margin-right: 40px;
+    padding: 20px;
+    border-radius: 20px;
+
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    grid-gap: 20px;
+    
+    
+  }
+  
+
+  .overlay-bundle{
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 1;
+}
+
+.popup-bundle {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    width: 600px; /* Increase the width */
+    height: 450px; /* Increase the height */
+    padding: 30px; /* Increase padding for better spacing */
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    z-index: 4;
+}
+
+.review-grid{
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* 2 columns */
+  grid-template-rows: repeat(2, 1fr); /* 3 rows */
+  gap: 10px; /* Space between items */
+  flex-grow: 1; /* Allow the grid to grow and take available space */
+  overflow: auto;
+}
+.review-grid-item{
+  width: 200px;
+  height: 80px;
+  background-color: var(--nav-color); 
+  border: 1px solid #ccc; 
+  border-radius: 10px;
+  padding: 10px; 
+  text-align: center;
+}
+/* CHARTS */
+
+.summary-content{
+  margin-top: 48px;
+  border-radius: 20px;
+}
+.chart-container {
+  background-color: var(--bg);
+  height: 80vh;
+  width: 95%;
+  max-width: 95%;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px; 
+  border: 5px #bf4800 solid;
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.chart {
+  
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative; /* Positioning for the overlay */
+  width: 70%;
+  max-width: 70%;
+  margin-left: auto;
+  margin-right: auto;
+}
+.header-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: absolute; 
+  bottom: 0%; 
+  width: 100%; 
+}
+
+  /* Elements */
+  h2{
+    font-size: 48px;
+    line-height: 1;
+    font-weight: 700;
+    letter-spacing: -0.00043em;
+  }
+
+  input, textarea{
+    border: none;
+    background-color: #E8E8ED;
+    border-radius: 8px;
+    padding: 6px;
+    padding-left: 10px;
+  }
+  textarea{
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  
+
+
+  p{
+    
+    font-size: 17px;
+    line-height: 1.17648;
+    font-weight: 400;
+    letter-spacing: -.022em;
+  } 
+
+  a:hover{
+    text-decoration: none;
+  }
+
+
+
+
+  /* Responsive */
+  
+
+  /* On screens that are less than 700px wide, make the sidebar into a topbar */
+  @media screen and (max-width: 700px) {
+    .nav {
+      width: 100%;
+      height: 44px;
+      position: fixed;
+    }
+
+    
+  }
+  
+  
+
+  /* On screens that are less than 400px, display the bar vertically, instead of horizontally */
+  @media screen and (max-width: 400px) {
+    .nav a {
+      text-align: center;
+      float: none;
+    }
+    
+  }
+

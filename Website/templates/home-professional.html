@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+
+{% block stylesheet %} 
+    <!-- Link Resective CSS --> 
+    <link rel="stylesheet" href="{{ url_for('static', filename='style-professional.css')}}">
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
+
+
+{% block content %}
+  <div class="content">
+    <div class="row">
+        <div class="left">
+            <div class="card block">
+                <div class="sub-card">
+                    <h2>{{ user.name }}</h2>
+                    <p>{{ user.address }}</p>
+                    <p>{{ user.service_type }}</p>
+                    <p>{{ user.experience }} Years</p>
+                    
+                    <a id="pendingLink" href="https://www.google.com">Edit Profile></a>
+                </div>
+                <div class="sub-card">
+                    <img src="{{ url_for('static', filename='user.png') }}" alt="profile" 
+                    style="height: 100%; border-radius: 10px; margin-left: 50%;">
+                    
+                </div>
+            </div>
+
+            
+            <div class="card-bottom-left block">
+                <h3><span style="font-size: 32px;">New Services</span></h3>
+                <!-- Table for Service Requests -->
+                <div class="classes" >
+                    <table>
+                        <tr>
+                            <th>Id</td>
+                            <th>Service Name</th>
+                            <th>Requested Date</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                        <!-- TODO : Implement for loop to list all services-->
+                        {% for service_req in service_requests %}
+                            {% if service_req.service.type|lower == current_user.service_type|lower and service_req.service_status == 'requested'  %}
+                                <tr>
+                                    <td><span>{{ service_req.id }}</span></td>
+                                    <td><span>{{ service_req.service.name }}</span></td>
+                                    <td><span>{{ service_req.date_of_request }}</span></td>
+                                    <td><span>{{ service_req.service_status }}</span></td>
+                                    <td> 
+                                        <form action="{{ url_for('views.accept_request', request_id=service_req.id) }}" method="post" style="display:inline;">
+                                            <button class="btn btn-success" type="submit">Accept</button>
+                                        </form>
+                                    </td>
+                                    
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
+                        
+                    </table>
+                </div>
+            </div>
+
+        </div>
+        <div class="right">
+            <div class="card-top-right block">
+                <h3>
+                    <span style="font-size: 32px; color:#bf4800;">Accepted Service Requests</span> 
+                </h3>
+                
+                <!-- List of Accepted Services -->
+                <div class="classes" >
+                    <table>
+                        <tr>
+                            <th>Id</td>
+                            <th>Service Name</th>
+                            <th>Assigned Prof.</th>
+                            <th>Requested Date</th>
+                            <th>Status</th>
+                        </tr>
+                        <!-- TODO : Implement for loop to list assigned services-->
+                        {% for service_req in service_requests %}
+                            {% if service_req.service.type|lower == current_user.service_type|lower and service_req.service_status == 'assigned'  %}
+                                <tr>
+                                    <td><span>{{ service_req.id }}</span></td>
+                                    <td><span>{{ service_req.service.name }}</span></td>
+                                    <td><span>{{ service_req.professional_id }}</span></td>
+                                    <td><span>{{ service_req.date_of_request }}</span></td>
+                                    <td><span>{{ service_req.service_status }}</span></td>
+                                    
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
+                        
+                    </table>
+                </div>
+                
+            </div>
+
+            <div class="card-bottom-right block">
+                <h3>
+                    <span style="font-size: 32px; color:#bf4800;">Completed Services</span> 
+                </h3>
+                
+                <!-- List of Completed Services -->
+                <div class="classes" >
+                    <table>
+                        <tr>
+                            <th>Service Name</th>
+                            <th>Customer Name</td>
+                            <th>Address</th>
+                            <th>Requested Date</th>
+                            <th>Rating</th>
+                            <th>Remarks</th>
+                        </tr>
+                        <!-- TODO : Implement for loop to list assigned services-->
+                        {% for review in reviews %}
+                            {% if review.service_request.professional_id == current_user.id and review.service_request.service_status == 'closed'  %}
+                                <tr>
+                                    <td><span>{{ review.service_request.service.name }}</span></td>
+                                    <td><span>{{ review.customer.name }}</span></td>
+                                    <td><span>{{ review.customer.address }}</span></td>
+                                    <td><span>{{ review.date_created }}</span></td>
+                                    <td><span>{{ review.rating }}</span></td>
+                                    <td><span>{{ review.remarks }} </span></td>
+                                    
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
+                        
+                    </table>
+                </div>
+            </div>
+            
+                
+            </div>
+        </div>
+    </div>
+
+
+            
+    </div>
+    
+   
+
+{% endblock %}
+
+
