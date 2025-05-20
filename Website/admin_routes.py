@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash,jsonify
 from flask_login import login_user, login_required, logout_user, current_user
-from .models import Customer, Professional, Admin, Service, ServiceRequest, Review
+from .models import Customer, Professional, Admin, Service, ServiceRequest, Review, ProfessionalRequest
 from Website import views
 from . import db
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -16,8 +16,17 @@ def admin_dashboard():
     professionals = Professional.query.all()
     services = Service.query.all()
     service_requests = ServiceRequest.query.all()
+    professional_requests = ProfessionalRequest.query.all()
     
-    return render_template('dashboard.html', user=current_user, professionals=professionals, services=services, service_requests=service_requests)
+    return render_template('dashboard.html', 
+                           user=current_user, 
+                           professionals=professionals, 
+                           services=services, 
+                           service_requests=service_requests,
+                           professional_requests=professional_requests,
+                           count_professional_requests = len(professional_requests))
+
+
 
 @admin_bp.route('/add_service', methods=['POST'])
 @login_required
@@ -85,3 +94,39 @@ def adm_summary():
         return render_template('adm-summary.html',user=current_user, status_dict=status_dict, avg_rating=avg_rating)
     else:
         return redirect(url_for('views.home'))
+    
+@admin_bp.route('/approve/<int:request_id>', methods=['POST'])
+def approve_professional_request(request_id):
+    # Find the professional request
+    prof_request = ProfessionalRequest.query.get_or_404(request_id)
+
+    # Add to Professional table
+    new_professional = Professional(
+        name=prof_request.name,
+        email=prof_request.email,
+        password=prof_request.password,  # Ensure password is hashed during signup
+        address=prof_request.address,
+        pincode=prof_request.pincode,
+        experience=prof_request.experience,
+        service_type=prof_request.service_type
+    )
+    db.session.add(new_professional)
+
+    # Delete from ProfessionalRequest table
+    db.session.delete(prof_request)
+    db.session.commit()
+
+    flash(f'Professional Request {prof_request.name} approved.', 'success')
+    return redirect(url_for('admin.admin_dashboard'))
+
+@admin_bp.route('/reject/<int:request_id>', methods=['POST'])
+def reject_professional_request(request_id):
+    # Find the professional request
+    prof_request = ProfessionalRequest.query.get_or_404(request_id)
+
+    # Delete from ProfessionalRequest table
+    db.session.delete(prof_request)
+    db.session.commit()
+
+    flash(f'Professional Request {prof_request.name} rejected.', 'danger')
+    return redirect(url_for('admin.admin_dashboard'))

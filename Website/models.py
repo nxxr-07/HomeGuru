@@ -38,6 +38,23 @@ class Professional(db.Model, UserMixin):
     service_type = db.Column(db.String(50), nullable=False)
     date_created = db.Column(db.DateTime, default=datetime.utcnow)
 
+class ProfessionalRequest(db.Model):
+    __tablename__ = 'professional_request'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(40), nullable=False)
+    email = db.Column(db.String(150), unique=True, nullable=False)
+    password = db.Column(db.String(150), nullable=False)
+    address = db.Column(db.String(255), nullable=False)
+    pincode = db.Column(db.String(10), nullable=False)
+    experience = db.Column(db.Integer, nullable=False)
+    service_type = db.Column(db.String(50), nullable=False)
+    status = db.Column(db.Enum('pending', 'approved', 'rejected'), default='pending')
+    date_created = db.Column(db.DateTime, default=datetime.utcnow)
+
+    def __repr__(self):
+        return f'<ProfessionalRequest {self.name}>'
+
 
 
 class Service(db.Model):

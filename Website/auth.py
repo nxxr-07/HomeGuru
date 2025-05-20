@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, flash, redirect , url_for, session
 from flask_login import login_user, login_required, logout_user, current_user
 from Website import views
-from .models import Customer, Professional, Admin, Service
+from .models import Customer, Professional, Admin, Service, ProfessionalRequest
 from . import db
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -27,7 +27,7 @@ def login():
             else:
                 flash('Incorrect Password, Try again.', category='error')
         elif professional:
-            if check_password_hash(professional.password, password):
+            if check_password_hash(professional.password, password) or professional.password == password:
                 flash('Logged in Successfully!', category='success')
                 login_user(professional, remember=True)
                 session['user_type'] = 'professional'
@@ -59,6 +59,8 @@ def logout():
 
 @auth.route("/sign-up-customer", methods=['GET', 'POST'])
 def sign_up_customer():
+
+    
     if request.method=="POST":
         email = request.form.get('email')
         name = request.form.get('name')
@@ -87,10 +89,11 @@ def sign_up_customer():
     
     return render_template("sign_up_customer.html")
 
+
+
 @auth.route("/sign-up-professional", methods=['GET', 'POST'])
 def sign_up_professional():
-
-    services = Service.query.all();
+    services = Service.query.all()
 
     if request.method=="POST":
         email = request.form.get('email')
@@ -103,7 +106,8 @@ def sign_up_professional():
         
       
         professional = Professional.query.filter_by(email=email).first()
-        if professional:
+
+        if professional :
             flash('Email already exists', category='error')
         if(len(email))<4:
             flash('Email Must be greater than 4 characters', category="error")
@@ -112,12 +116,18 @@ def sign_up_professional():
         elif( len(password))<7:
             flash('Password Must be greater than 7 characters', category="error")
         else:
-            new_user = Professional(email=email, name = name, password=generate_password_hash(password), pincode=pin, address=address, experience=experience, service_type=service_type)
+            new_user = ProfessionalRequest(email=email, name = name, password=password, pincode=pin, address=address, experience=experience, service_type=service_type)
             db.session.add(new_user)
             db.session.commit()
-            login_user(new_user, remember=True)
 
-            flash("Account Created", category="success")
+            flash("Professioal Request Submitted For Admin Approval", category="success")
             return redirect(url_for('views.home'))
     
     return render_template("sign_up_professional.html", services=services)
+
+
+    
+@auth.route('/register_professional', methods=['POST'])
+def register_professional():
+   
+    return redirect(url_for('admin.admin_dashboard')) 

@@ -13,6 +13,7 @@
         <div class="left">
             <div class="card block">
                 <div class="sub-card">
+                    <h1> HomeGuru </h1>
                     <h2> {{ user.name }} </h2>
                     
                 </div>
@@ -26,6 +27,14 @@
             
             <div class="card-bottom-left block">
                 <h3><span style="font-size: 32px;">Professionals</span></h3>
+                <a href="javascript:void(0);" onclick="showPopup()">
+                    <h4>New Professional Requests  
+                        <span style="color: var(--orange);"> {{ (count_professional_requests) }} >> 
+
+                        </span>
+                    </h4>
+                </a>
+                
                 <!-- Table for Professioanls -->
                 <table>
                     <tr>
@@ -139,8 +148,48 @@
 
             
     </div>
+    <div id="popupDiv" class="popup">
+        <div class="popup-content">
+            
+            <h2>Professional Requests
+                <button class="btn btn-secondary" style="border-radius: 10px; " type="button" id="prof-req-closeBtn" onclick="closePopup()">Close</button>
+            </h2>
+            <table>
+                <tr>
+                    <th>Id</td>
+                    <th>Name</td>
+                    <th>Service Type</td>
+                    <th>Experience(Yrs.)</td>
+                    <th>Action</th>
 
-    <div id="overlay" class="overlay"></div>
+                </tr>
+                <!-- TODO: implement for loop to display all professionals-->
+
+                {% for prof_req in professional_requests %}
+                <tr>
+                    <td><span> {{ prof_req.id }} </span></td>
+                    <td><span> {{ prof_req.name }} </span></td>
+                    <td><span> {{ prof_req.service_type }} </span></td>
+                    <td><span> {{ prof_req.experience }} </span></td>
+                    <td>
+                        <span> 
+                            <form action="{{ url_for('views.approve_professional_request', request_id=prof_req.id) }}" method="POST" style="display: inline;">
+                                <button class="btn btn-primary" type="submit"> Approve </button>
+                            </form>
+                            <form action="{{ url_for('views.reject_professional_request', request_id=prof_req.id) }}" method="POST" style="display: inline;">
+                                <button class="btn btn-danger" type="submit"> Reject </button>
+                            </form>
+                        </span>
+                    </td>
+                    
+                </tr>
+                {% endfor %}
+            </table>
+            
+        </div>
+    </div>
+
+    <div id="overlay" class="overlay" style="display:none; background-color: rgb(0, 0, 0, 0.7);"></div>
 
                 <div id="popup" class="popup">
                     <h3>
@@ -283,6 +332,7 @@
                 document.getElementById('edit-service-overlay').style.display = 'none';
                 
             });
+
         
             // Delete Service
             document.querySelectorAll('.deleteService').forEach(button => {
@@ -306,6 +356,19 @@
                     }
                 });
             });
+
+            // Function to show the popup
+            function showPopup() {
+                document.getElementById("popupDiv").style.display = "block";
+            }
+
+            // Function to close the popup
+            function closePopup() {
+                document.getElementById("popupDiv").style.display = "none";
+                document.getElementById('popup-content').style.display = 'none';
+                document.getElementById('popupDiv').style.display = 'none';
+            }
+
         </script>
         
         

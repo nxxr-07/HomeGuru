@@ -35,7 +35,6 @@
                     <!-- TODO : Implement Loop to display list of service requests -->
                     <table style="border: 2px solid var(--orange);">
                         <tr>
-                            <th>Id</td>
                             <th>Service Name</th>
                             <th>Assigned Prof.</td>
                             <th>Requested Date</td>
@@ -46,7 +45,6 @@
                         {% for service_req in service_requests %}
                             {% if service_req.customer_id == current_user.id %}
                                 <tr>
-                                    <td><span>{{ service_req.id }}</span></td>
                                     <td><span>{{ service_req.service.name }}</span></td>
                                     <td><span>{{ service_req.professional.name }}</span></td>
                                     <td><span>{{ service_req.date_of_request }}</span></td>
@@ -54,13 +52,13 @@
                                     {% if service_req.service_status == 'requested' %}
                                     <td>
                                         <form action="{{ url_for('views.cancel_request', request_id=service_req.id) }}" method="post" style="display:inline;">
-                                            <button class="btn btn-primary" type="submit">Cancel</button>
+                                            <button class="btn btn-danger" type="submit">Cancel</button>
                                         </form>
                                     </td>
                                     {% elif service_req.service_status == 'assigned' %}
                                     <td>
                                         
-                                        <button class="btn btn-primary" 
+                                        <button class="btn btn-success" 
                                         onclick="reviewPopup('{{ service_req.id }}', '{{ service_req.service.name }}', '{{ service_req.service.price }}', '{{ service_req.service.description }}', '{{ service_req.professional.name }}')">Close It</button>
 
                                         
@@ -162,7 +160,7 @@
                             <h3>${service.name}</h3>
                             <span>${service.description || 'No description available'}</span>
                             <span>${service.time_required}</span>
-                            <span>$${service.price.toFixed(2)}</span>
+                            <span>₹${service.price.toFixed(2)}</span>
                             <button id="book-service" class="btn btn-success" onclick="bookService(${ service.id })">Book</button>
                         </div>`).join('') 
                     : '<p>No services available for this type.</p>';

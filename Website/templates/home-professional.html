@@ -1,25 +1,62 @@
 {% extends 'base.html' %}
 
 {% block stylesheet %} 
-    <!-- Link Resective CSS --> 
+    <!-- Link Respective CSS --> 
     <link rel="stylesheet" href="{{ url_for('static', filename='style-professional.css')}}">
     
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 {% endblock %}
 
-
 {% block content %}
-  <div class="content">
+<div class="content">
+    <!-- Popup for Edit Profile -->
+    <div id="editProfileOverlay" class="overlay" style="display:none;"></div>
+    <div id="editProfilePopup" class="popup-overlay" style="display: none;">
+        <div class="popup-content">
+            <span class="close-btn" onclick="closeEditProfilePopup()">&times;</span>
+            <h3>Edit Profile</h3>
+            <form id="editProfileForm" method="POST" action="{{ url_for('views.edit_profile') }}">
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" name="name" class="form-control" value="{{ user.name }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" class="form-control" value="{{ user.email }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="address">Address</label>
+                    <input type="text" id="address" name="address" class="form-control" value="{{ user.address }}">
+                </div>
+                <div class="form-group">
+                    <label for="pincode">Pincode</label>
+                    <input type="text" id="pincode" name="pincode" class="form-control" value="{{ user.pincode }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="service_type">Service Type</label>
+                    <input type="text" id="service_type" name="service_type" class="form-control" value="{{ user.service_type }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="experience">Experience (Years)</label>
+                    <input type="number" id="experience" name="experience" class="form-control" value="{{ user.experience }}">
+                </div>
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+                <button type="button" class="btn btn-secondary" onclick="closeEditProfilePopup()">Cancel</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Left Section -->
     <div class="row">
         <div class="left">
             <div class="card block">
                 <div class="sub-card">
-                    <h2>{{ user.name }}</h2>
+                    <h3><b> {{ user.name }} </b></h3>
                     <p>{{ user.address }}</p>
                     <p>{{ user.service_type }}</p>
                     <p>{{ user.experience }} Years</p>
                     
-                    <a id="pendingLink" href="https://www.google.com">Edit Profile></a>
+                    <a id="pendingLink" href="javascript:void(0);" onclick="openEditProfilePopup()">Edit Profile ></a>
                 </div>
                 <div class="sub-card">
                     <img src="{{ url_for('static', filename='user.png') }}" alt="profile" 
@@ -27,10 +64,10 @@
                     
                 </div>
             </div>
-
             
+            <!-- Other left-side content -->
             <div class="card-bottom-left block">
-                <h3><span style="font-size: 32px;">New Services</span></h3>
+                <h3><span style="font-size: 32px;">New Service Requests</span></h3>
                 <!-- Table for Service Requests -->
                 <div class="classes" >
                     <table>
@@ -41,9 +78,8 @@
                             <th>Status</th>
                             <th>Action</th>
                         </tr>
-                        <!-- TODO : Implement for loop to list all services-->
                         {% for service_req in service_requests %}
-                            {% if service_req.service.type|lower == current_user.service_type|lower and service_req.service_status == 'requested'  %}
+                            {% if service_req.service.type|lower == current_user.service_type|lower and service_req.service_status == 'requested' %}
                                 <tr>
                                     <td><span>{{ service_req.id }}</span></td>
                                     <td><span>{{ service_req.service.name }}</span></td>
@@ -54,23 +90,22 @@
                                             <button class="btn btn-success" type="submit">Accept</button>
                                         </form>
                                     </td>
-                                    
                                 </tr>
                             {% endif %}
                         {% endfor %}
-                        
                     </table>
                 </div>
             </div>
-
         </div>
+
+        <!-- Right Section -->
         <div class="right">
             <div class="card-top-right block">
                 <h3>
                     <span style="font-size: 32px; color:#bf4800;">Accepted Service Requests</span> 
                 </h3>
                 
-                <!-- List of Accepted Services -->
+                <!-- Accepted Services Table -->
                 <div class="classes" >
                     <table>
                         <tr>
@@ -80,23 +115,19 @@
                             <th>Requested Date</th>
                             <th>Status</th>
                         </tr>
-                        <!-- TODO : Implement for loop to list assigned services-->
                         {% for service_req in service_requests %}
-                            {% if service_req.service.type|lower == current_user.service_type|lower and service_req.service_status == 'assigned'  %}
+                            {% if service_req.service.type|lower == current_user.service_type|lower and service_req.service_status == 'assigned' %}
                                 <tr>
                                     <td><span>{{ service_req.id }}</span></td>
                                     <td><span>{{ service_req.service.name }}</span></td>
                                     <td><span>{{ service_req.professional_id }}</span></td>
                                     <td><span>{{ service_req.date_of_request }}</span></td>
                                     <td><span>{{ service_req.service_status }}</span></td>
-                                    
                                 </tr>
                             {% endif %}
                         {% endfor %}
-                        
                     </table>
                 </div>
-                
             </div>
 
             <div class="card-bottom-right block">
@@ -104,7 +135,7 @@
                     <span style="font-size: 32px; color:#bf4800;">Completed Services</span> 
                 </h3>
                 
-                <!-- List of Completed Services -->
+                <!-- Completed Services Table -->
                 <div class="classes" >
                     <table>
                         <tr>
@@ -115,9 +146,8 @@
                             <th>Rating</th>
                             <th>Remarks</th>
                         </tr>
-                        <!-- TODO : Implement for loop to list assigned services-->
                         {% for review in reviews %}
-                            {% if review.service_request.professional_id == current_user.id and review.service_request.service_status == 'closed'  %}
+                            {% if review.service_request.professional_id == current_user.id and review.service_request.service_status == 'closed' %}
                                 <tr>
                                     <td><span>{{ review.service_request.service.name }}</span></td>
                                     <td><span>{{ review.customer.name }}</span></td>
@@ -125,26 +155,26 @@
                                     <td><span>{{ review.date_created }}</span></td>
                                     <td><span>{{ review.rating }}</span></td>
                                     <td><span>{{ review.remarks }} </span></td>
-                                    
                                 </tr>
                             {% endif %}
                         {% endfor %}
-                        
                     </table>
                 </div>
             </div>
-            
-                
-            </div>
         </div>
     </div>
+</div>
 
+<script>
+    function openEditProfilePopup() {
+        document.getElementById('editProfileOverlay').style.display = 'block';
+        document.getElementById('editProfilePopup').style.display = 'block';
+    }
 
-            
-    </div>
-    
-   
+    function closeEditProfilePopup() {
+        document.getElementById('editProfileOverlay').style.display = 'block';
+        document.getElementById('editProfilePopup').style.display = 'none';
+    }
+</script>
 
 {% endblock %}
-
-

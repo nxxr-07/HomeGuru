@@ -4,7 +4,7 @@ from flask import Blueprint, render_template, request, flash, jsonify, redirect,
 from datetime import date
 from werkzeug.utils import secure_filename
 from flask_login import login_required, current_user
-from .models import Customer, Professional, Admin, Service, ServiceRequest,  Review
+from .models import Customer, Professional, Admin, Service, ServiceRequest,  Review, ProfessionalRequest
 from sqlalchemy import func
 
 from . import db 
@@ -215,3 +215,19 @@ def summary():
 
         return render_template('summary.html',user=current_user, status_dict=status_counts, avg_rating=avg_rating, user_type='Professional')
     
+@views.route('/edit-profile', methods=['POST'])
+@login_required
+def edit_profile():
+    professional = Professional.query.get_or_404(current_user.id)
+
+    # Update details from form
+    professional.name = request.form.get('name')
+    professional.email = request.form.get('email')
+    professional.address = request.form.get('address')
+    professional.pincode = request.form.get('pincode')
+    professional.experience = request.form.get('experience')
+    professional.service_type = request.form.get('service_type')
+
+    db.session.commit()
+    flash('Profile updated successfully!', 'success')
+    return redirect(url_for('views.home'))
